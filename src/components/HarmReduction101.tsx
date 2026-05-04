@@ -7,7 +7,7 @@ import { ResearchCitationsPanel } from "./ResearchCitationsPanel";
 
 export function HarmReduction101() {
   return (
-    <section className="panel" id="harm-reduction" aria-labelledby="harm-heading">
+    <section className="panel panel-emergency" id="harm-reduction" aria-labelledby="harm-heading">
       <h2 id="harm-heading">Safety Guides &amp; Overdose Response</h2>
       <p className="section-intro">
         Practical, plain-language safety guides written by and for the community — reviewed against public health references. Includes overdose signs and step-by-step first aid.

@@ -109,7 +109,7 @@ export function TreatmentLocator({ mapboxToken }: { mapboxToken: string | null }
   const Icon = SERVICE_META[serviceType].icon;
 
   return (
-    <section className="panel" id="support" aria-labelledby="support-heading">
+    <section className="panel panel-tool" id="support" aria-labelledby="support-heading">
       <h2 id="support-heading">Find Naloxone, Treatment, and Syringe Services</h2>
       <p className="section-intro">
         Find nearby harm reduction and treatment resources by ZIP code. ZIP lookups stay in this session only and are not stored. This is a safety reference, not a substitute for clinical or emergency advice.

@@ -221,7 +221,7 @@ export function InteractionChecker() {
   const filledCount = drugs.filter((d) => d.trim()).length;
 
   return (
-    <section className="panel" id="interactions" aria-labelledby="interactions-heading">
+    <section className="panel panel-tool" id="interactions" aria-labelledby="interactions-heading">
       <h2 id="interactions-heading">Drug Interaction Checker</h2>
       <p className="section-intro">
         Enter up to 8 drugs or medications to check all known interactions at once — sourced from
@@ -265,9 +265,10 @@ export function InteractionChecker() {
 
       {result ? (
         <div className="result-card">
-          <p>
-            Checked: <strong>{result.queried.join(" + ")}</strong>
-          </p>
+          <div className="interaction-result-header">
+            <span>Checked:</span>
+            <strong>{result.queried.join(" + ")}</strong>
+          </div>
           {result.warning ? <p className="feedback ok">{result.warning}</p> : null}
           {result.matches.length === 0 ? (
             <>
@@ -293,23 +294,47 @@ export function InteractionChecker() {
                   ))}
                 </div>
               ) : null}
+              <div className="next-step-cta next-step-cta-ok">
+                <strong>Still unsure?</strong>{" "}
+                Call Poison Control at <a href="tel:18002221222">1-800-222-1222</a> — free, 24/7, confidential.
+              </div>
             </>
           ) : (
-            <ul className="stack-list">
-              {result.matches.slice(0, 10).map((match, index) => (
-                <li key={`${match.severity}-${index}`}>
-                  <strong className={`severity-${match.severity.toLowerCase()}`}>{match.severity.toUpperCase()}</strong>: {match.description}
-                </li>
-              ))}
-            </ul>
+            <>
+              <div aria-live="polite">
+                {result.matches.slice(0, 10).map((match, index) => {
+                  const sev = match.severity.toLowerCase();
+                  const actionMap: Record<string, string> = {
+                    major: "Avoid this combination. Call Poison Control or consult a pharmacist immediately.",
+                    severe: "Avoid this combination. Seek medical advice before taking these together.",
+                    moderate: "Use caution. Talk to a pharmacist or prescriber before combining.",
+                    minor: "Generally manageable — still worth discussing with a pharmacist.",
+                  };
+                  const action = actionMap[sev] ?? "Consult a pharmacist or prescriber.";
+                  return (
+                    <div key={`${match.severity}-${index}`} className="interaction-match">
+                      <span className={`interaction-match-severity severity-${sev}`}>{match.severity.toUpperCase()}</span>
+                      <span className="interaction-match-desc">{match.description}</span>
+                      <span className="interaction-match-action">{action}</span>
+                    </div>
+                  );
+                })}
+              </div>
+              {result.matches.some((m) => ["major", "severe"].includes(m.severity.toLowerCase())) && (
+                <div className="next-step-cta" role="alert">
+                  <strong>Major interaction detected.</strong>{" "}
+                  Call Poison Control at <a href="tel:18002221222">1-800-222-1222</a> or contact a pharmacist before taking these together.
+                </div>
+              )}
+            </>
           )}
           <p className="tiny-note">
             Source:{" "}
             <a href={result.source.citation.url} target="_blank" rel="noreferrer">
               {result.source.citation.title}
-            </a>
+            </a>{" "}
+            · This is a safety reference, not a substitute for clinical or emergency advice.
           </p>
-          <p className="tiny-note">This is a safety reference, not a substitute for clinical or emergency advice.</p>
         </div>
       ) : null}
     </section>

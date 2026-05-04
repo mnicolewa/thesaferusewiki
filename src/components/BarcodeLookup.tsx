@@ -138,7 +138,7 @@ export function BarcodeLookup() {
   }
 
   return (
-    <section className="panel" id="barcode" aria-labelledby="barcode-heading">
+    <section className="panel panel-tool" id="barcode" aria-labelledby="barcode-heading">
       <h2 id="barcode-heading">Medication Lookup</h2>
       <p className="section-intro">
         Scan a pill bottle barcode or type in a UPC/NDC code to see what a medication is, its active ingredients, and dosage form.
