@@ -710,22 +710,23 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   color: #fff; font-size: 0.75rem; font-weight: 700;
 }
 .step-icon { flex-shrink: 0; display: flex; margin-top: 0.15rem; }
-.medlineplus-panel { margin-top: 0.75rem; border-top: 1px solid rgba(0,0,0,0.08); padding-top: 0.65rem; }
+.medlineplus-panel { margin-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.65rem; }
 .nlm-toggle {
   display: flex; align-items: center; gap: 0.4rem;
   background: none; border: none; padding: 0;
-  font-size: 0.82rem; font-weight: 500; cursor: pointer; width: auto; border-radius: 0; box-shadow: none;
+  color: var(--ink-mid);
+  font-size: 0.78rem; font-weight: 500; cursor: pointer; width: auto; border-radius: 0; box-shadow: none;
 }
-.nlm-toggle:hover { background: none; transform: none; box-shadow: none; text-decoration: underline; }
+.nlm-toggle:hover { background: none; transform: none; box-shadow: none; color: var(--muted); text-decoration: underline; }
 .nlm-body {
-  margin-top: 0.5rem; padding: 0.65rem 0.85rem;
-  background: rgba(255,255,255,0.04); border-radius: 0.65rem; border: 1px solid var(--border); font-size: 0.875rem;
+  margin-top: 0.5rem; padding: 0.6rem 0.8rem;
+  background: rgba(255,255,255,0.02); border-radius: 0.55rem; border: 1px solid rgba(255,255,255,0.07); font-size: 0.85rem;
 }
-.nlm-title { margin: 0 0 0.4rem; }
-.nlm-summary { color: #b8c0d4; line-height: 1.6; }
+.nlm-title { margin: 0 0 0.35rem; color: var(--ink-mid); font-size: 0.82rem; font-weight: 600; }
+.nlm-summary { color: var(--ink-mid); line-height: 1.6; }
 .nlm-summary ul { padding-left: 1.2rem; }
-.nlm-summary a { color: var(--teal-500); }
-.nlm-link { display: inline-block; margin-top: 0.5rem; color: var(--teal-500); font-size: 0.82rem; }
+.nlm-summary a { color: var(--muted); }
+.nlm-link { display: inline-block; margin-top: 0.4rem; color: var(--muted); font-size: 0.78rem; }
 
 .good-samaritan-card {
   border-left-color: #8b5cf6;

@@ -199,7 +199,6 @@ export function OverdoseCard(props: OverdoseEntry) {
         <button
           type="button"
           className="nlm-toggle"
-          style={{ color: colors.text }}
           onClick={handleExpand}
           aria-expanded={open}
         >
