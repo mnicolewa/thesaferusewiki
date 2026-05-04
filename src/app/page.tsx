@@ -116,7 +116,7 @@ export default function Home() {
           </a>
         </div>
         <p className="site-footer-credit">
-          Designed &amp; engineered by Nicole Washington &copy; 2026
+          Designed &amp; engineered by Nicole &copy; 2026
         </p>
       </footer>
     </>
