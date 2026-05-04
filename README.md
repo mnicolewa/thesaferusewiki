@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## The Safer Use Wiki
 
-## Getting Started
+Community-first harm reduction platform focused on:
+- drug interaction checks with citation-backed source data
+- barcode lookup for medication/product information
+- overdose prevention and first-aid education
+- local community alerts for dangerous supply trends
 
-First, run the development server:
+Built with Next.js App Router and free-tier public APIs.
+
+## APIs Used
+
+- RxNav API: interaction checks and medication concept matching
+- openFDA Drug API: medication NDC/barcode lookup
+- Open Food Facts API: fallback barcode product lookup
+
+## Local Development
+
+Install and run:
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Core Routes
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- GET /api/interactions?medA=&medB=
+- GET /api/barcode/[code]
+- GET /api/alerts
+- POST /api/alerts
+- POST /api/alerts/[id]/upvote
 
-## Learn More
+## Notes
 
-To learn more about Next.js, take a look at the following resources:
+- Community alerts are in-memory in this MVP and reset on server restart.
+- Add authentication, persistent storage, and a formal verification workflow before production rollout.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Build Check
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run build
+```
 
-## Deploy on Vercel
+## Disclaimer
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is educational and informational. It is not a substitute for medical advice, diagnosis, or treatment.

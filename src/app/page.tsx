@@ -1,65 +1,66 @@
-import Image from "next/image";
+import { BarcodeLookup } from "@/components/BarcodeLookup";
+import { CommunityAlerts } from "@/components/CommunityAlerts";
+import { HarmReduction101 } from "@/components/HarmReduction101";
+import { InteractionChecker } from "@/components/InteractionChecker";
+import { SourceList } from "@/components/SourceList";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      <a href="#main-content" className="skip-link">Skip to main content</a>
+
+      <header className="site-header">
+        <div className="site-header-inner">
+          <Link href="/" className="site-logo">
+            Safer Use <span className="site-logo-accent">Wiki</span>
+          </Link>
+          <nav aria-label="Site sections">
+            <ul className="site-nav">
+              <li><a href="#interactions">Drug Interactions</a></li>
+              <li><a href="#barcode">Medication Lookup</a></li>
+              <li><a href="#harm-reduction">Safety Guides</a></li>
+              <li><a href="#alerts">Supply Warnings</a></li>
+              <li><a href="#sources">Sources</a></li>
+            </ul>
+          </nav>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      </header>
+
+      <div className="app-shell">
+        <main className="content-wrap" id="main-content" tabIndex={-1}>
+          <section className="hero" aria-label="Site introduction">
+            <p className="eyebrow">By the Community, for the Community</p>
+            <h1>The Safer Use Wiki</h1>
+            <p>
+              Free, fact-checked harm reduction information — including drug interaction checks,
+              overdose first aid, medication lookup by barcode, and community supply warnings.
+            </p>
+            <div className="hero-links">
+              <a href="#interactions">Check Drug Interactions</a>
+              <a href="#harm-reduction">Overdose Response</a>
+              <a href="#alerts">Supply Warnings</a>
+            </div>
+          </section>
+
+          <InteractionChecker />
+          <BarcodeLookup />
+          <HarmReduction101 />
+          <CommunityAlerts />
+          <SourceList />
+        </main>
+      </div>
+
+      <footer className="site-footer">
+        <p>
+          <strong>The Safer Use Wiki</strong> is a community harm reduction resource.
+          This site does not provide medical advice. In an emergency, call <strong>911</strong> or your local emergency number.
+        </p>
+        <p>
+          Overdose helpline: <a href="tel:18005228011">1-800-522-8011</a> &nbsp;·&nbsp;
+          Crisis Text Line: text <strong>HOME</strong> to <strong>741741</strong>
+        </p>
+      </footer>
+    </>
   );
 }
