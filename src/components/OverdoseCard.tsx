@@ -49,9 +49,30 @@ const ICON_MAP: Record<string, FC> = {
 };
 
 const COLOR_MAP = {
-  opioid: { border: "#dc2626", bg: "#fef2f2", badge: "#dc2626", text: "#991b1b" },
-  stimulant: { border: "#d97706", bg: "#fffbeb", badge: "#d97706", text: "#92400e" },
-  depressant: { border: "#2563eb", bg: "#eff6ff", badge: "#2563eb", text: "#1e40af" },
+  opioid: {
+    border: "#ef4444",
+    bg: "rgba(127, 29, 29, 0.18)",
+    badge: "#dc2626",
+    text: "#fecaca",
+    pillBg: "rgba(127, 29, 29, 0.24)",
+    stepBg: "rgba(127, 29, 29, 0.16)",
+  },
+  stimulant: {
+    border: "#f59e0b",
+    bg: "rgba(120, 53, 15, 0.18)",
+    badge: "#d97706",
+    text: "#fef3c7",
+    pillBg: "rgba(120, 53, 15, 0.24)",
+    stepBg: "rgba(120, 53, 15, 0.16)",
+  },
+  depressant: {
+    border: "#60a5fa",
+    bg: "rgba(30, 64, 175, 0.18)",
+    badge: "#2563eb",
+    text: "#dbeafe",
+    pillBg: "rgba(30, 64, 175, 0.24)",
+    stepBg: "rgba(30, 64, 175, 0.16)",
+  },
 };
 
 type MedlinePlusResult = {
@@ -112,6 +133,7 @@ export function OverdoseCard(props: OverdoseEntry) {
       style={{
         borderLeftColor: colors.border,
         background: colors.bg,
+        color: "var(--ink)",
       }}
     >
       {/* Header */}
@@ -129,7 +151,7 @@ export function OverdoseCard(props: OverdoseEntry) {
           {acronym && (
             <span
               className="acronym-pill"
-              style={{ borderColor: colors.border, color: colors.text }}
+              style={{ borderColor: colors.border, color: colors.text, background: colors.pillBg }}
               title={acronym.expansion}
             >
               <BookOpen size={11} aria-hidden="true" />
@@ -159,7 +181,7 @@ export function OverdoseCard(props: OverdoseEntry) {
         <p className="overdose-section-label">Respond:</p>
         <ol className="step-list">
           {response.map((step, i) => (
-            <li key={step} className="step-card" style={{ borderColor: colors.border }}>
+            <li key={step} className="step-card" style={{ borderColor: colors.border, background: colors.stepBg }}>
               <span className="step-number" style={{ background: colors.border }}>
                 {i + 1}
               </span>
