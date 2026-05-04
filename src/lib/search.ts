@@ -86,7 +86,7 @@ const BASE_ENTRIES: SearchEntry[] = [
     href: "#harm-reduction",
     title: "Good Samaritan Laws",
     section: "Overdose Response",
-    description: "Review overdose Good Samaritan protections, detect your state, and open state-level legal resources.",
+    description: "Review overdose Good Samaritan protections, choose your state, and download a wallet-size PDF cheat sheet.",
     keywords: [
       "good samaritan",
       "911 law",
@@ -94,6 +94,9 @@ const BASE_ENTRIES: SearchEntry[] = [
       "legal protection",
       "state law",
       "immunity",
+      "cheat sheet",
+      "download pdf",
+      "wallet card",
     ],
     priority: 8,
   },

@@ -766,6 +766,55 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   margin-top: 0.35rem;
 }
 
+.good-samaritan-controls {
+  display: grid;
+  gap: 0.65rem;
+  margin-top: 0.45rem;
+}
+
+.good-samaritan-select {
+  background: rgba(255,255,255,0.08);
+  color: #f5f3ff;
+  border: 1px solid rgba(139, 92, 246, 0.5);
+  border-radius: 0.55rem;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.86rem;
+}
+
+.good-samaritan-select:focus-visible {
+  outline: 2px solid rgba(167, 139, 250, 0.9);
+  outline-offset: 2px;
+}
+
+.good-samaritan-wallet-row {
+  margin-top: 0.65rem;
+  display: flex;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+}
+
+.good-samaritan-wallet {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  border-radius: 999px;
+  padding: 0.38rem 0.75rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  background: rgba(139, 92, 246, 0.08);
+  color: #d4ccff;
+}
+
+.good-samaritan-wallet:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.good-samaritan-meta {
+  margin-top: 0.55rem;
+}
+
 .good-samaritan-list {
   margin: 0.4rem 0 0;
   padding-left: 1.1rem;
