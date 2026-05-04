@@ -7,6 +7,8 @@ import { SourceList } from "@/components/SourceList";
 import { TreatmentLocator } from "@/components/TreatmentLocator";
 import Link from "next/link";
 
+const DONATION_URL = "https://ko-fi.com/washingtondesignlab";
+
 export default function Home() {
   return (
     <>
@@ -95,6 +97,17 @@ export default function Home() {
           Crisis Text Line: text <strong>HOME</strong> to <strong>741741</strong> &nbsp;·&nbsp;
           Poison Control: <a href="tel:18002221222">1-800-222-1222</a>
         </p>
+        <div className="site-footer-donate">
+          <a
+            className="site-footer-donate-link"
+            href={DONATION_URL}
+            target="_blank"
+            rel="noreferrer"
+            aria-label="Donate to the creator on Ko-fi"
+          >
+            Donate to the creator
+          </a>
+        </div>
         <p className="site-footer-credit">
           Designed &amp; engineered by Nicole Washington &copy; 2026
         </p>

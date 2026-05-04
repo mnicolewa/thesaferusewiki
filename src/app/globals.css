@@ -1021,6 +1021,32 @@ select:focus {
 }
 .site-footer a { color: var(--teal-500); text-underline-offset: 3px; }
 .site-footer strong { color: #e8edf5; }
+.site-footer-donate {
+  margin-top: 1rem;
+}
+.site-footer-donate-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.5rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid rgba(20, 184, 166, 0.28);
+  border-radius: 999px;
+  background: rgba(20, 184, 166, 0.08);
+  color: #d9fffb;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+.site-footer-donate-link:hover,
+.site-footer-donate-link:focus-visible {
+  background: rgba(20, 184, 166, 0.16);
+  border-color: rgba(45, 212, 191, 0.5);
+  transform: translateY(-1px);
+}
 .site-footer-credit { margin-top: 1rem; color: #5a6478; font-size: 0.72rem; letter-spacing: 0.02em; }
 
 /* ─── Drug Interaction Checker ──────────────────────────────────── */
