@@ -1,4 +1,5 @@
 import { BarcodeLookup } from "@/components/BarcodeLookup";
+import { FeedbackWidget } from "@/components/FeedbackWidget";
 import { GlobalSearch } from "@/components/GlobalSearch";
 import { HarmReduction101 } from "@/components/HarmReduction101";
 import { InteractionChecker } from "@/components/InteractionChecker";
@@ -30,8 +31,6 @@ export default function Home() {
           <nav aria-label="Site sections">
             <ul className="site-nav">
               <li><a href="#interactions">Interactions</a></li>
-              <li><a href="#barcode">Barcode</a></li>
-              <li><a href="#support">Find Help</a></li>
               <li><a href="#harm-reduction">Safety</a></li>
               <li><a href="#sources">Sources</a></li>
             </ul>
@@ -58,10 +57,10 @@ export default function Home() {
                 <strong>Check a drug or combination</strong>
                 <span>Interaction checker, barcode lookup, substance facts</span>
               </a>
-              <a href="#support" className="task-card task-card--find">
-                <span className="task-card-eyebrow">Near you</span>
+              <a href="https://findtreatment.gov" target="_blank" rel="noopener noreferrer" className="task-card task-card--find">
+                <span className="task-card-eyebrow">External resource</span>
                 <strong>Find nearby help</strong>
-                <span>Naloxone, treatment centers, syringe service programs</span>
+                <span>Naloxone, treatment centers &amp; syringe services via SAMHSA FindTreatment.gov</span>
               </a>
             </div>
           </section>
@@ -78,10 +77,13 @@ export default function Home() {
           </div>
 
           <InteractionChecker />
-          <BarcodeLookup />
-          <TreatmentLocator mapboxToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? null} />
+          {/* BarcodeLookup hidden from UI — code retained */}
+          {false && <BarcodeLookup />}
+          {/* TreatmentLocator hidden from UI — code retained */}
+          {false && <TreatmentLocator mapboxToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? null} />}
           <HarmReduction101 />
           <SourceList />
+          <FeedbackWidget />
         </main>
       </div>
 
