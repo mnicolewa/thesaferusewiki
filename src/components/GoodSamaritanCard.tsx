@@ -1,6 +1,6 @@
 "use client";
 
-import { Download, MapPin, ShieldCheck, Smartphone } from "lucide-react";
+import { Download, MapPin, ShieldCheck } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 type ApiStateOption = {
@@ -184,18 +184,7 @@ export function GoodSamaritanCard() {
           </a>
         </div>
 
-        <div className="good-samaritan-wallet-row" role="group" aria-label="Wallet options">
-          <button className="good-samaritan-wallet" type="button" disabled>
-            <Smartphone size={14} aria-hidden="true" />
-            Apple Wallet (setup required)
-          </button>
-          <button className="good-samaritan-wallet" type="button" disabled>
-            <Smartphone size={14} aria-hidden="true" />
-            Google Wallet (setup required)
-          </button>
-        </div>
-
-        <p className="tiny-note">State selected: {selectedStateLabel}. Download works now; Apple/Google wallet pass install requires signing credentials and issuer setup.</p>
+        <p className="tiny-note">State selected: {selectedStateLabel}. Download works now in all modern browsers.</p>
       </div>
 
       <div className="overdose-section">
