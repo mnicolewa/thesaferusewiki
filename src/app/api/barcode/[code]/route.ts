@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { citationMap } from "@/lib/citations";
+import { getAdverseEvents, getDrugLabel, getRecalls } from "@/services/openfda";
 
 type OpenFdaNdcResult = {
   proprietary_name?: string;
@@ -64,6 +65,13 @@ export async function GET(_: Request, context: { params: Promise<{ code: string 
   const ndcByProduct = ndcByPackage ?? (await queryOpenFda(`product_ndc:\"${normalized}\"`));
 
   if (ndcByProduct) {
+    const lookupName = ndcByProduct.generic_name ?? ndcByProduct.proprietary_name ?? "";
+    const [adverseEvents, label, recalls] = await Promise.all([
+      lookupName ? getAdverseEvents(lookupName).catch(() => []) : Promise.resolve([]),
+      getDrugLabel(ndcByProduct.product_ndc ?? lookupName).catch(() => null),
+      lookupName ? getRecalls(lookupName).catch(() => []) : Promise.resolve([]),
+    ]);
+
     return NextResponse.json({
       source: citationMap.openfda,
       resultType: "medication",
@@ -77,6 +85,9 @@ export async function GET(_: Request, context: { params: Promise<{ code: string 
         packageNdc: ndcByProduct.package_ndc ?? [],
         productNdc: ndcByProduct.product_ndc ?? null,
       },
+      adverseEvents,
+      label,
+      recalls,
     });
   }
 

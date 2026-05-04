@@ -14,6 +14,21 @@ type Match = {
 type InteractionPayload = {
   queried: string[];
   matches: Match[];
+  warning?: string;
+  fallbackSubstances?: Array<{
+    name: string;
+    compound: {
+      cid: number;
+      iupacName: string | null;
+      molecularFormula: string | null;
+      pharmacologySummary: string | null;
+    };
+    safety: {
+      hazardCodes: string[];
+      ld50: string | null;
+      knownInteractions: string[];
+    };
+  }>;
   source: {
     name: string;
     citation: { title: string; url: string };
@@ -253,15 +268,37 @@ export function InteractionChecker() {
           <p>
             Checked: <strong>{result.queried.join(" + ")}</strong>
           </p>
+          {result.warning ? <p className="feedback ok">{result.warning}</p> : null}
           {result.matches.length === 0 ? (
-            <p className="feedback ok">
-              No direct interaction entries were returned for this combination.
-            </p>
+            <>
+              <p className="feedback ok">
+                No direct interaction entries were returned for this combination.
+              </p>
+              {result.fallbackSubstances?.length ? (
+                <div className="fallback-substances">
+                  {result.fallbackSubstances.map((item) => (
+                    <article key={item.name} className="mini-card">
+                      <h3>{item.name}</h3>
+                      <p className="tiny-note">IUPAC: {item.compound.iupacName ?? "Unavailable"}</p>
+                      <p className="tiny-note">Formula: {item.compound.molecularFormula ?? "Unavailable"}</p>
+                      {item.compound.pharmacologySummary ? <p>{item.compound.pharmacologySummary}</p> : null}
+                      <p className="tiny-note">
+                        Hazards: {item.safety.hazardCodes.join(", ") || "Unavailable"}
+                      </p>
+                      <p className="tiny-note">LD50: {item.safety.ld50 ?? "Unavailable"}</p>
+                      <p className="tiny-note">
+                        Data: <a href="https://pubchem.ncbi.nlm.nih.gov/" target="_blank" rel="noreferrer">PubChem / NIH</a>
+                      </p>
+                    </article>
+                  ))}
+                </div>
+              ) : null}
+            </>
           ) : (
             <ul className="stack-list">
               {result.matches.slice(0, 10).map((match, index) => (
                 <li key={`${match.severity}-${index}`}>
-                  <strong>{match.severity.toUpperCase()}</strong>: {match.description}
+                  <strong className={`severity-${match.severity.toLowerCase()}`}>{match.severity.toUpperCase()}</strong>: {match.description}
                 </li>
               ))}
             </ul>
@@ -272,6 +309,7 @@ export function InteractionChecker() {
               {result.source.citation.title}
             </a>
           </p>
+          <p className="tiny-note">This is a safety reference, not a substitute for clinical or emergency advice.</p>
         </div>
       ) : null}
     </section>

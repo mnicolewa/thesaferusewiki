@@ -3,6 +3,7 @@ import { harmReductionCards, overdoseFirstAid } from "@/lib/content";
 import { DrabcBanner } from "./DrabcBanner";
 import { GoodSamaritanCard } from "./GoodSamaritanCard";
 import { OverdoseCard } from "./OverdoseCard";
+import { ResearchCitationsPanel } from "./ResearchCitationsPanel";
 
 export function HarmReduction101() {
   return (
@@ -39,6 +40,7 @@ export function HarmReduction101() {
                 );
               })}
             </p>
+            <ResearchCitationsPanel query={card.title} />
           </article>
         ))}
       </div>

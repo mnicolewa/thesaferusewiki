@@ -12,9 +12,17 @@ type BarcodeResult = {
     route?: string[];
     productNdc?: string | null;
     activeIngredients?: Array<{ name?: string; strength?: string }>;
+    packageNdc?: string[];
     brand?: string | null;
     categories?: string | null;
   };
+  adverseEvents?: Array<{ reaction: string; count: number }>;
+  label?: {
+    warnings: string[];
+    contraindications: string[];
+    dosageForm: string | null;
+  } | null;
+  recalls?: Array<{ reason: string; date: string; classification: string | null }>;
   source: {
     title: string;
     url: string;
@@ -176,13 +184,56 @@ export function BarcodeLookup() {
           </p>
 
           {result.resultType === "medication" ? (
-            <ul className="stack-list">
-              <li>Generic name: {result.item.genericName ?? "Unavailable"}</li>
-              <li>Labeler: {result.item.labeler ?? "Unavailable"}</li>
-              <li>Dosage form: {result.item.dosageForm ?? "Unavailable"}</li>
-              <li>Routes: {result.item.route?.join(", ") || "Unavailable"}</li>
-              <li>NDC: {result.item.productNdc ?? "Unavailable"}</li>
-            </ul>
+            <>
+              {result.recalls?.length ? <p className="feedback error">Recall alert: this product has active FDA recall information.</p> : null}
+              <ul className="stack-list">
+                <li>Generic name: {result.item.genericName ?? "Unavailable"}</li>
+                <li>Labeler: {result.item.labeler ?? "Unavailable"}</li>
+                <li>Dosage form: {result.item.dosageForm ?? result.label?.dosageForm ?? "Unavailable"}</li>
+                <li>Routes: {result.item.route?.join(", ") || "Unavailable"}</li>
+                <li>NDC: {result.item.productNdc ?? "Unavailable"}</li>
+              </ul>
+              {result.label?.warnings?.length ? (
+                <div>
+                  <h3>Warnings</h3>
+                  <ul className="stack-list">
+                    {result.label.warnings.map((warning) => (
+                      <li key={warning}>{warning}</li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+              {result.label?.contraindications?.length ? (
+                <div>
+                  <h3>Contraindications</h3>
+                  <ul className="stack-list">
+                    {result.label.contraindications.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+              {result.adverseEvents?.length ? (
+                <div>
+                  <h3>Top serious adverse events</h3>
+                  <ul className="stack-list">
+                    {result.adverseEvents.map((event) => (
+                      <li key={event.reaction}>{event.reaction} ({event.count} reports)</li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+              {result.recalls?.length ? (
+                <div>
+                  <h3>Active recalls</h3>
+                  <ul className="stack-list">
+                    {result.recalls.map((recall) => (
+                      <li key={`${recall.reason}-${recall.date}`}>{recall.date}: {recall.reason}</li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+            </>
           ) : (
             <ul className="stack-list">
               <li>Brand: {result.item.brand ?? "Unavailable"}</li>
@@ -196,6 +247,7 @@ export function BarcodeLookup() {
               {result.source.title}
             </a>
           </p>
+          <p className="tiny-note">This is a safety reference, not a substitute for clinical or emergency advice.</p>
         </div>
       ) : null}
     </section>

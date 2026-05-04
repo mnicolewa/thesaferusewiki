@@ -3,6 +3,7 @@ import { CommunityAlerts } from "@/components/CommunityAlerts";
 import { HarmReduction101 } from "@/components/HarmReduction101";
 import { InteractionChecker } from "@/components/InteractionChecker";
 import { SourceList } from "@/components/SourceList";
+import { TreatmentLocator } from "@/components/TreatmentLocator";
 import Link from "next/link";
 
 export default function Home() {
@@ -19,6 +20,7 @@ export default function Home() {
             <ul className="site-nav">
               <li><a href="#interactions">Drug Interactions</a></li>
               <li><a href="#barcode">Medication Lookup</a></li>
+              <li><a href="#support">Find Help</a></li>
               <li><a href="#harm-reduction">Safety Guides</a></li>
               <li><a href="#sources">Sources</a></li>
             </ul>
@@ -37,12 +39,14 @@ export default function Home() {
             </p>
             <div className="hero-links">
               <a href="#interactions">Check Drug Interactions</a>
+              <a href="#support">Find Nearby Help</a>
               <a href="#harm-reduction">Overdose Response</a>
             </div>
           </section>
 
           <InteractionChecker />
           <BarcodeLookup />
+          <TreatmentLocator mapboxToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN ?? null} />
           <HarmReduction101 />
           {/* <CommunityAlerts /> */}
           <SourceList />

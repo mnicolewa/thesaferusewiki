@@ -1,35 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { citationMap } from "@/lib/citations";
+import { getDrugInfo, getDrugInteractions } from "@/services/drugbank";
+import { getCompoundSafety, searchCompound } from "@/services/pubchem";
+import { getInteractionsByCui, getRxCui } from "@/services/rxnav";
 
 const MAX_MEDS = 8;
-
-type RxCuiResponse = {
-  idGroup?: {
-    rxnormId?: string[];
-  };
-};
-
-type InteractionResponse = {
-  fullInteractionTypeGroup?: Array<{
-    sourceDisclaimer?: string;
-    sourceName?: string;
-    fullInteractionType?: Array<{
-      minConcept?: Array<{ name?: string }>;
-      interactionPair?: Array<{
-        description?: string;
-        severity?: string;
-      }>;
-    }>;
-  }>;
-};
-
-async function getRxCui(name: string): Promise<string | null> {
-  const url = `https://rxnav.nlm.nih.gov/REST/rxcui.json?name=${encodeURIComponent(name)}`;
-  const response = await fetch(url, { next: { revalidate: 60 * 60 } });
-  if (!response.ok) return null;
-  const data = (await response.json()) as RxCuiResponse;
-  return data.idGroup?.rxnormId?.[0] ?? null;
-}
 
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
@@ -54,46 +29,91 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: `Maximum ${MAX_MEDS} medications allowed.` }, { status: 400 });
   }
 
-  const rxCuis = await Promise.all(meds.map(getRxCui));
+  if (process.env.DRUGBANK_API_KEY) {
+    try {
+      const [anchor, ...others] = meds;
+      const interactions = await getDrugInteractions(anchor);
+      const matched = interactions.filter((item) =>
+        others.some((name) => item.drug.toLowerCase().includes(name.toLowerCase()))
+      );
+      const drugInfo = await Promise.all(meds.map((name) => getDrugInfo(name)));
+
+      if (matched.length > 0) {
+        return NextResponse.json({
+          queried: meds,
+          matches: matched.map((item) => ({
+            severity: item.severity,
+            description: `${item.drug}: ${item.clinicalSignificance} Mechanism: ${item.mechanism}`,
+          })),
+          supportingInfo: drugInfo,
+          source: {
+            name: "DrugBank API",
+            citation: citationMap.drugbank,
+          },
+        });
+      }
+    } catch {
+      // Fall back silently to RxNav when DrugBank is unavailable.
+    }
+  }
+
+  const rxCuis = await Promise.all(meds.map((name) => getRxCui(name)));
   const failed = meds.filter((_, i) => !rxCuis[i]);
 
   if (failed.length > 0) {
-    return NextResponse.json(
-      {
-        error: `Not recognized by RxNav: ${failed.join(", ")}. Try full generic names and avoid abbreviations.`,
-      },
-      { status: 404 }
-    );
+    try {
+      const fallbackSubstances = await Promise.all(
+        failed.map(async (name) => {
+          const compound = await searchCompound(name);
+          if (!compound) return null;
+          const safety = await getCompoundSafety(compound.cid);
+          return {
+            name,
+            compound,
+            safety,
+          };
+        })
+      );
+
+      return NextResponse.json(
+        {
+          queried: meds,
+          matches: [],
+          fallbackSubstances: fallbackSubstances.filter(Boolean),
+          source: {
+            name: "PubChem fallback",
+            citation: citationMap.pubchem,
+          },
+          warning:
+            "Some substances were not recognized in medication databases. Showing PubChem safety information where available.",
+        },
+        { status: 200 }
+      );
+    } catch {
+      return NextResponse.json(
+        {
+          error: `Not recognized by our medication databases: ${failed.join(", ")}. Try full generic names and avoid abbreviations.`,
+        },
+        { status: 404 }
+      );
+    }
   }
 
-  const cuiList = (rxCuis as string[]).join("+");
-  const interactionUrl = `https://rxnav.nlm.nih.gov/REST/interaction/list.json?rxcuis=${cuiList}`;
-  const interactionResponse = await fetch(interactionUrl, { next: { revalidate: 60 * 30 } });
+  try {
+    const matches = await getInteractionsByCui(rxCuis as string[]);
 
-  if (!interactionResponse.ok) {
+    return NextResponse.json({
+      queried: meds,
+      matches,
+      source: {
+        name: "RxNav Interaction API",
+        citation: citationMap.rxnav,
+      },
+    });
+  } catch {
     return NextResponse.json(
       { error: "Unable to reach interaction source right now." },
       { status: 502 }
     );
   }
-
-  const payload = (await interactionResponse.json()) as InteractionResponse;
-
-  const matches =
-    payload.fullInteractionTypeGroup
-      ?.flatMap((group) => group.fullInteractionType ?? [])
-      .flatMap((item) => item.interactionPair ?? [])
-      .map((pair) => ({
-        severity: pair.severity ?? "unknown",
-        description: pair.description ?? "No description available.",
-      })) ?? [];
-
-  return NextResponse.json({
-    queried: meds,
-    matches,
-    source: {
-      name: "RxNav Interaction API",
-      citation: citationMap.rxnav,
-    },
-  });
 }

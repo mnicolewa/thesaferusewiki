@@ -49,6 +49,34 @@ export const citations: Citation[] = [
     publisher: "U.S. FDA",
     checkedAt: "2026-05-03",
   },
+  {
+    id: "pubchem",
+    title: "PubChem REST API",
+    url: "https://pubchem.ncbi.nlm.nih.gov/docs/pug-rest",
+    publisher: "NIH / PubChem",
+    checkedAt: "2026-05-04",
+  },
+  {
+    id: "pubmed",
+    title: "PubMed E-utilities",
+    url: "https://www.ncbi.nlm.nih.gov/books/NBK25501/",
+    publisher: "NCBI / NIH",
+    checkedAt: "2026-05-04",
+  },
+  {
+    id: "samhsaLocator",
+    title: "SAMHSA Treatment Locator",
+    url: "https://findtreatment.gov/",
+    publisher: "SAMHSA",
+    checkedAt: "2026-05-04",
+  },
+  {
+    id: "drugbank",
+    title: "DrugBank API",
+    url: "https://www.drugbank.com/",
+    publisher: "DrugBank",
+    checkedAt: "2026-05-04",
+  },
 ];
 
 export const citationMap = Object.fromEntries(citations.map((item) => [item.id, item]));
