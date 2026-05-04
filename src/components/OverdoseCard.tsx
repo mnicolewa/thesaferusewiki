@@ -22,10 +22,10 @@ import {
   Zap,
   type LucideProps,
 } from "lucide-react";
-import { useState } from "react";
+import React, { useState } from "react";
 import type { OverdoseEntry } from "@/lib/content";
 
-type FC = (props: LucideProps) => JSX.Element;
+type FC = (props: LucideProps) => React.ReactElement;
 
 const ICON_MAP: Record<string, FC> = {
   Activity: Activity as FC,

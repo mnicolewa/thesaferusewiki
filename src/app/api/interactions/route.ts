@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { citationMap } from "@/lib/citations";
 
+const MAX_MEDS = 8;
+
 type RxCuiResponse = {
   idGroup?: {
     rxnormId?: string[];
@@ -24,39 +26,53 @@ type InteractionResponse = {
 async function getRxCui(name: string): Promise<string | null> {
   const url = `https://rxnav.nlm.nih.gov/REST/rxcui.json?name=${encodeURIComponent(name)}`;
   const response = await fetch(url, { next: { revalidate: 60 * 60 } });
-  if (!response.ok) {
-    return null;
-  }
+  if (!response.ok) return null;
   const data = (await response.json()) as RxCuiResponse;
   return data.idGroup?.rxnormId?.[0] ?? null;
 }
 
 export async function GET(request: NextRequest) {
-  const medA = request.nextUrl.searchParams.get("medA")?.trim();
-  const medB = request.nextUrl.searchParams.get("medB")?.trim();
+  const params = request.nextUrl.searchParams;
 
-  if (!medA || !medB) {
-    return NextResponse.json({ error: "medA and medB are required" }, { status: 400 });
+  // Support both multi-drug (?meds[]=x&meds[]=y) and legacy (?medA=x&medB=y)
+  const medsParam = params.getAll("meds[]").map((m) => m.trim()).filter(Boolean);
+  const medA = params.get("medA")?.trim();
+  const medB = params.get("medB")?.trim();
+
+  const meds =
+    medsParam.length >= 2
+      ? medsParam
+      : medA && medB
+      ? [medA, medB]
+      : [];
+
+  if (meds.length < 2) {
+    return NextResponse.json({ error: "At least two medications are required." }, { status: 400 });
   }
 
-  const [rxCuiA, rxCuiB] = await Promise.all([getRxCui(medA), getRxCui(medB)]);
+  if (meds.length > MAX_MEDS) {
+    return NextResponse.json({ error: `Maximum ${MAX_MEDS} medications allowed.` }, { status: 400 });
+  }
 
-  if (!rxCuiA || !rxCuiB) {
+  const rxCuis = await Promise.all(meds.map(getRxCui));
+  const failed = meds.filter((_, i) => !rxCuis[i]);
+
+  if (failed.length > 0) {
     return NextResponse.json(
       {
-        error:
-          "One or both medication names were not recognized by RxNav. Try generic names and avoid abbreviations.",
+        error: `Not recognized by RxNav: ${failed.join(", ")}. Try full generic names and avoid abbreviations.`,
       },
       { status: 404 }
     );
   }
 
-  const interactionUrl = `https://rxnav.nlm.nih.gov/REST/interaction/list.json?rxcuis=${rxCuiA}+${rxCuiB}`;
+  const cuiList = (rxCuis as string[]).join("+");
+  const interactionUrl = `https://rxnav.nlm.nih.gov/REST/interaction/list.json?rxcuis=${cuiList}`;
   const interactionResponse = await fetch(interactionUrl, { next: { revalidate: 60 * 30 } });
 
   if (!interactionResponse.ok) {
     return NextResponse.json(
-      { error: "Unable to reach interaction source right now" },
+      { error: "Unable to reach interaction source right now." },
       { status: 502 }
     );
   }
@@ -73,7 +89,7 @@ export async function GET(request: NextRequest) {
       })) ?? [];
 
   return NextResponse.json({
-    queried: [medA, medB],
+    queried: meds,
     matches,
     source: {
       name: "RxNav Interaction API",
