@@ -169,12 +169,13 @@ export function GoodSamaritanCard() {
         <p className="overdose-section-label">What this usually means:</p>
         <p className="good-samaritan-copy">{note.summary}</p>
         <p className="good-samaritan-copy">{note.caution}</p>
+        <p className="tiny-note">Open LawAtlas and search for "overdose Good Samaritan" to view current state policy details.</p>
       </div>
 
       <div className="medlineplus-panel good-samaritan-actions">
         <a
           className="good-samaritan-link"
-          href="https://www.ncsl.org/civil-and-criminal-justice/drug-overdose-immunity-good-samaritan-laws"
+          href="https://lawatlas.org/"
           target="_blank"
           rel="noreferrer"
         >
