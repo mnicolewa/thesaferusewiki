@@ -1,5 +1,6 @@
 import { BarcodeLookup } from "@/components/BarcodeLookup";
 import { CommunityAlerts } from "@/components/CommunityAlerts";
+import { GlobalSearch } from "@/components/GlobalSearch";
 import { HarmReduction101 } from "@/components/HarmReduction101";
 import { InteractionChecker } from "@/components/InteractionChecker";
 import { SourceList } from "@/components/SourceList";
@@ -16,6 +17,7 @@ export default function Home() {
           <Link href="/" className="site-logo">
             Know Your <span className="site-logo-accent">Substance</span>
           </Link>
+          <GlobalSearch />
           <nav aria-label="Site sections">
             <ul className="site-nav">
               <li><a href="#interactions">Drug Interactions</a></li>
