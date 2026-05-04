@@ -36,10 +36,15 @@ export async function POST(request: NextRequest) {
       results,
       source: citationMap.samhsaLocator,
     });
-  } catch {
+  } catch (error) {
+    const message =
+      error instanceof Error
+        ? error.message
+        : "Nearby service information is unavailable right now.";
+
     return NextResponse.json(
       {
-        error: "Nearby service information is unavailable right now.",
+        error: message,
         results: [],
         source: citationMap.samhsaLocator,
       },

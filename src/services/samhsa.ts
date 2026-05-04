@@ -1,4 +1,4 @@
-import { fetchJsonWithTimeout, pingUrl, toPlainLanguageError } from "@/services/http";
+import { pingUrl, toPlainLanguageError } from "@/services/http";
 
 const SAMHSA_BASE = "https://findtreatment.gov/locator/api";
 
@@ -88,6 +88,9 @@ export async function findTreatmentCenters(
   radius = 25,
   serviceType = "SA"
 ): Promise<TreatmentCenter[]> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10_000);
+
   try {
     const url = new URL(SAMHSA_BASE);
     url.searchParams.set("sType", serviceType);
@@ -95,11 +98,38 @@ export async function findTreatmentCenters(
     url.searchParams.set("distance", String(radius));
     url.searchParams.set("output", "json");
 
-    const data = await fetchJsonWithTimeout<SamhsaResponse>(url.toString());
+    const response = await fetch(url.toString(), {
+      headers: { Accept: "application/json" },
+      cache: "no-store",
+      signal: controller.signal,
+    });
+
+    if (!response.ok) {
+      throw new Error("SAMHSA treatment web service is unavailable right now.");
+    }
+
+    const contentType = response.headers.get("content-type") ?? "";
+    if (!contentType.includes("application/json")) {
+      throw new Error(
+        "SAMHSA treatment web service is temporarily unavailable. Use FindTreatment.gov directly."
+      );
+    }
+
+    const data = (await response.json()) as SamhsaResponse;
     const rows = data.results ?? data.facilities ?? [];
     return rows.map(mapCenter);
   } catch (error) {
+    if (error instanceof Error && error.name === "AbortError") {
+      throw new Error("The SAMHSA locator is taking too long to respond. Please try again.");
+    }
+
+    if (error instanceof Error && error.message.includes("FindTreatment.gov directly")) {
+      throw error;
+    }
+
     throw new Error(toPlainLanguageError(error, "Treatment locations are unavailable right now."));
+  } finally {
+    clearTimeout(timeout);
   }
 }
 

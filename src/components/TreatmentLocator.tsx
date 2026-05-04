@@ -140,7 +140,18 @@ export function TreatmentLocator({ mapboxToken }: { mapboxToken: string | null }
         </button>
       </div>
 
-      {error ? <p className="feedback error">{error}</p> : null}
+      {error ? (
+        <div className="feedback error" role="alert">
+          <p>{error}</p>
+          <p className="tiny-note">
+            Fallback: open{" "}
+            <a href="https://findtreatment.gov/" target="_blank" rel="noreferrer">
+              FindTreatment.gov
+            </a>{" "}
+            or call SAMHSA&apos;s national helpline at <a href="tel:18006624357">1-800-662-4357</a>.
+          </p>
+        </div>
+      ) : null}
 
       {results.length > 0 ? (
         <>
