@@ -1021,6 +1021,7 @@ select:focus {
 }
 .site-footer a { color: var(--teal-500); text-underline-offset: 3px; }
 .site-footer strong { color: #e8edf5; }
+.site-footer-credit { margin-top: 1rem; color: #5a6478; font-size: 0.72rem; letter-spacing: 0.02em; }
 
 /* ─── Drug Interaction Checker ──────────────────────────────────── */
 .drug-list {

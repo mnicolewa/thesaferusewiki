@@ -95,6 +95,9 @@ export default function Home() {
           Crisis Text Line: text <strong>HOME</strong> to <strong>741741</strong> &nbsp;·&nbsp;
           Poison Control: <a href="tel:18002221222">1-800-222-1222</a>
         </p>
+        <p className="site-footer-credit">
+          Designed &amp; engineered by Nicole Washington &copy; 2026
+        </p>
       </footer>
     </>
   );
