@@ -31,10 +31,8 @@ export default function Home() {
           <nav aria-label="Site sections">
             <ul className="site-nav">
               <li><a href="#interactions">Interactions</a></li>
-              <li><a href="#barcode">Medications</a></li>
               <li><a href="#support">Find Help</a></li>
               <li><a href="#harm-reduction">Safety</a></li>
-              <li><a href="#sources">Sources</a></li>
             </ul>
           </nav>
         </div>
