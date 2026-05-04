@@ -9,9 +9,10 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "The Safer Use Wiki",
+  metadataBase: new URL("https://knowyoursubstance.com"),
+  title: "Know Your Substance",
   description:
-    "Community harm-reduction knowledge base with drug interaction checks, barcode lookup, and overdose first-aid references.",
+    "Know Your Substance is a community harm-reduction knowledge base with interaction checks, medication lookup, and overdose first-aid references.",
 };
 
 export default function RootLayout({

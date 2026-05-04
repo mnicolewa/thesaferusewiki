@@ -1,4 +1,4 @@
-## The Safer Use Wiki
+## Know Your Substance
 
 Community-first harm reduction platform focused on:
 - drug interaction checks with citation-backed source data

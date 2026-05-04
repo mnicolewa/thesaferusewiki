@@ -13,7 +13,7 @@ export default function Home() {
       <header className="site-header">
         <div className="site-header-inner">
           <Link href="/" className="site-logo">
-            Safer Use <span className="site-logo-accent">Wiki</span>
+            Know Your <span className="site-logo-accent">Substance</span>
           </Link>
           <nav aria-label="Site sections">
             <ul className="site-nav">
@@ -31,7 +31,7 @@ export default function Home() {
         <main className="content-wrap" id="main-content" tabIndex={-1}>
           <section className="hero" aria-label="Site introduction">
             <p className="eyebrow">By the Community, for the Community</p>
-            <h1>The Safer Use Wiki</h1>
+            <h1>Know Your Substance</h1>
             <p>
               Free, fact-checked harm reduction information — including drug interaction checks,
               overdose first aid, medication lookup by barcode, and community supply warnings.
@@ -53,7 +53,7 @@ export default function Home() {
 
       <footer className="site-footer">
         <p>
-          <strong>The Safer Use Wiki</strong> is a community harm reduction resource.
+          <strong>Know Your Substance</strong> is a community harm reduction resource.
           This site does not provide medical advice. In an emergency, call <strong>911</strong> or your local emergency number.
         </p>
         <p>
