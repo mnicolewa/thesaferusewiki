@@ -181,11 +181,11 @@ export function OverdoseCard(props: OverdoseEntry) {
         <p className="overdose-section-label">Respond:</p>
         <ol className="step-list">
           {response.map((step, i) => (
-            <li key={step} className="step-card" style={{ borderColor: colors.border, background: colors.stepBg }}>
-              <span className="step-number" style={{ background: colors.border }}>
+            <li key={step} className="step-card step-card--neutral">
+              <span className="step-number step-number--neutral">
                 {i + 1}
               </span>
-              <span className="step-icon" style={{ color: colors.border }}>
+              <span className="step-icon step-icon--neutral">
                 <ResolvedIcon name={responseIcons[i] ?? "AlertCircle"} size={15} aria-hidden="true" />
               </span>
               <span>{step}</span>

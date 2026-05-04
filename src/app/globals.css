@@ -704,12 +704,21 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06);
   border-radius: 0.65rem; padding: 0.5rem 0.7rem; font-size: 0.875rem;
 }
+.step-card--neutral {
+  background: rgba(255,255,255,0.03);
+  border-color: rgba(255,255,255,0.07);
+}
 .step-number {
   flex-shrink: 0; display: flex; align-items: center; justify-content: center;
   width: 1.4rem; height: 1.4rem; border-radius: 999px;
   color: #fff; font-size: 0.75rem; font-weight: 700;
 }
+.step-number--neutral {
+  background: rgba(255,255,255,0.15);
+  color: var(--ink);
+}
 .step-icon { flex-shrink: 0; display: flex; margin-top: 0.15rem; }
+.step-icon--neutral { color: var(--ink-mid); }
 .medlineplus-panel { margin-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 0.65rem; }
 .nlm-toggle {
   display: flex; align-items: center; gap: 0.4rem;
