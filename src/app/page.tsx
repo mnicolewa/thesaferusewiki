@@ -3,6 +3,7 @@ import { FeedbackWidget } from "@/components/FeedbackWidget";
 import { GlobalSearch } from "@/components/GlobalSearch";
 import { HarmReduction101 } from "@/components/HarmReduction101";
 import { InteractionChecker } from "@/components/InteractionChecker";
+import { ScrollToTopOnLoad } from "@/components/ScrollToTopOnLoad";
 import { SourceList } from "@/components/SourceList";
 import { TreatmentLocator } from "@/components/TreatmentLocator";
 import Link from "next/link";
@@ -12,6 +13,7 @@ const DONATION_URL = "https://ko-fi.com/washingtondesignlab";
 export default function Home() {
   return (
     <>
+      <ScrollToTopOnLoad />
       <a href="#main-content" className="skip-link">Skip to main content</a>
 
       {/* ── Emergency strip ── */}
