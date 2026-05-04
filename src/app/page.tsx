@@ -20,7 +20,6 @@ export default function Home() {
               <li><a href="#interactions">Drug Interactions</a></li>
               <li><a href="#barcode">Medication Lookup</a></li>
               <li><a href="#harm-reduction">Safety Guides</a></li>
-              <li><a href="#alerts">Supply Warnings</a></li>
               <li><a href="#sources">Sources</a></li>
             </ul>
           </nav>
@@ -34,19 +33,18 @@ export default function Home() {
             <h1>Know Your Substance</h1>
             <p>
               Free, fact-checked harm reduction information — including drug interaction checks,
-              overdose first aid, medication lookup by barcode, and community supply warnings.
+              overdose first aid, and medication lookup by barcode.
             </p>
             <div className="hero-links">
               <a href="#interactions">Check Drug Interactions</a>
               <a href="#harm-reduction">Overdose Response</a>
-              <a href="#alerts">Supply Warnings</a>
             </div>
           </section>
 
           <InteractionChecker />
           <BarcodeLookup />
           <HarmReduction101 />
-          <CommunityAlerts />
+          {/* <CommunityAlerts /> */}
           <SourceList />
         </main>
       </div>
