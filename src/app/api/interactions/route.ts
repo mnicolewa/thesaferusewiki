@@ -6,6 +6,23 @@ import { getInteractionsByCui, getRxCui } from "@/services/rxnav";
 
 const MAX_MEDS = 8;
 
+async function buildPubChemFallback(names: string[]) {
+  const fallbackSubstances = await Promise.all(
+    names.map(async (name) => {
+      const compound = await searchCompound(name);
+      if (!compound) return null;
+      const safety = await getCompoundSafety(compound.cid);
+      return {
+        name,
+        compound,
+        safety,
+      };
+    })
+  );
+
+  return fallbackSubstances.filter(Boolean);
+}
+
 export async function GET(request: NextRequest) {
   const params = request.nextUrl.searchParams;
 
@@ -57,23 +74,29 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  const rxCuis = await Promise.all(meds.map((name) => getRxCui(name)));
+  let rxCuis: Array<string | null>;
+  try {
+    rxCuis = await Promise.all(meds.map((name) => getRxCui(name)));
+  } catch {
+    const fallbackSubstances = await buildPubChemFallback(meds);
+    return NextResponse.json({
+      queried: meds,
+      matches: [],
+      fallbackSubstances,
+      source: {
+        name: "PubChem fallback",
+        citation: citationMap.pubchem,
+      },
+      warning:
+        "Medication interaction feed is temporarily unavailable. Showing PubChem substance safety details where available.",
+    });
+  }
+
   const failed = meds.filter((_, i) => !rxCuis[i]);
 
   if (failed.length > 0) {
     try {
-      const fallbackSubstances = await Promise.all(
-        failed.map(async (name) => {
-          const compound = await searchCompound(name);
-          if (!compound) return null;
-          const safety = await getCompoundSafety(compound.cid);
-          return {
-            name,
-            compound,
-            safety,
-          };
-        })
-      );
+      const fallbackSubstances = await buildPubChemFallback(failed);
 
       return NextResponse.json(
         {
@@ -111,9 +134,17 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch {
-    return NextResponse.json(
-      { error: "Unable to reach interaction source right now." },
-      { status: 502 }
-    );
+    const fallbackSubstances = await buildPubChemFallback(meds);
+    return NextResponse.json({
+      queried: meds,
+      matches: [],
+      fallbackSubstances,
+      source: {
+        name: "PubChem fallback",
+        citation: citationMap.pubchem,
+      },
+      warning:
+        "Medication interaction feed is temporarily unavailable. Showing PubChem substance safety details where available.",
+    });
   }
 }

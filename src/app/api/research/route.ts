@@ -3,7 +3,9 @@ import { citationMap } from "@/lib/citations";
 import { getCitationsForSubstance, searchPubMed } from "@/services/pubmed";
 
 export async function GET(request: NextRequest) {
-  const query = request.nextUrl.searchParams.get("query")?.trim();
+  const query =
+    request.nextUrl.searchParams.get("query")?.trim() ??
+    request.nextUrl.searchParams.get("q")?.trim();
   const mode = request.nextUrl.searchParams.get("mode")?.trim();
 
   if (!query) {

@@ -42,13 +42,36 @@ export async function POST(request: NextRequest) {
         ? error.message
         : "Nearby service information is unavailable right now.";
 
+    const fallbackResults = [
+      {
+        name: "SAMHSA National Helpline",
+        address: "Nationwide (24/7)",
+        phone: "1-800-662-4357",
+        services: ["Treatment referral", "Mental health support", "Substance use support"],
+        distance: null,
+        lat: null,
+        lng: null,
+        type: "treatment" as const,
+      },
+      {
+        name: "FindTreatment.gov",
+        address: "https://findtreatment.gov/",
+        phone: null,
+        services: ["ZIP search", "State-licensed treatment locator"],
+        distance: null,
+        lat: null,
+        lng: null,
+        type: "treatment" as const,
+      },
+    ];
+
     return NextResponse.json(
       {
-        error: message,
-        results: [],
+        warning: message,
+        results: fallbackResults,
         source: citationMap.samhsaLocator,
       },
-      { status: 502 }
+      { status: 200 }
     );
   }
 }

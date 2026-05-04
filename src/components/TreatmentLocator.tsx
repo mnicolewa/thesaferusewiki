@@ -21,6 +21,7 @@ type TreatmentResponse = {
   results: TreatmentResult[];
   source: { title: string; url: string };
   error?: string;
+  warning?: string;
 };
 
 const SERVICE_META = {
@@ -97,6 +98,9 @@ export function TreatmentLocator({ mapboxToken }: { mapboxToken: string | null }
       if (!response.ok) {
         setError(data.error ?? "Nearby service information is unavailable right now.");
       } else {
+        if (data.warning) {
+          setError(data.warning);
+        }
         setResults(data.results);
       }
     } catch {
@@ -166,14 +170,20 @@ export function TreatmentLocator({ mapboxToken }: { mapboxToken: string | null }
                 <p className="tiny-note">
                   Distance: {item.distance ? `${item.distance.toFixed(1)} miles` : "Unavailable"}
                 </p>
-                <a
-                  className="good-samaritan-link"
-                  href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(item.address)}`}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Get directions
-                </a>
+                {item.address.startsWith("http") ? (
+                  <a className="good-samaritan-link" href={item.address} target="_blank" rel="noreferrer">
+                    Open resource
+                  </a>
+                ) : (
+                  <a
+                    className="good-samaritan-link"
+                    href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(item.address)}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Get directions
+                  </a>
+                )}
               </article>
             ))}
           </div>
