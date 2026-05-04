@@ -738,6 +738,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 .nlm-link { display: inline-block; margin-top: 0.4rem; color: var(--muted); font-size: 0.78rem; }
 
 .good-samaritan-card {
+  grid-column: 1 / -1;
   border-left-color: #8b5cf6;
   background: rgba(76, 29, 149, 0.2);
 }
@@ -763,6 +764,19 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   font-size: 0.9rem;
   line-height: 1.55;
   margin-top: 0.35rem;
+}
+
+.good-samaritan-list {
+  margin: 0.4rem 0 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.35rem;
+  color: var(--ink);
+  font-size: 0.88rem;
+}
+
+.good-samaritan-list li::marker {
+  color: #a78bfa;
 }
 
 .good-samaritan-actions {
