@@ -1,6 +1,7 @@
 import { BarcodeLookup } from "@/components/BarcodeLookup";
 import { FeedbackWidget } from "@/components/FeedbackWidget";
 import { GlobalSearch } from "@/components/GlobalSearch";
+import { GoodSamaritanCard } from "@/components/GoodSamaritanCard";
 import { HarmReduction101 } from "@/components/HarmReduction101";
 import { InteractionChecker } from "@/components/InteractionChecker";
 import { ScrollToTopOnLoad } from "@/components/ScrollToTopOnLoad";
@@ -78,6 +79,10 @@ export default function Home() {
               <li>Not a substitute for emergency care</li>
             </ul>
             <span className="how-it-works-privacy">No data stored · No tracking</span>
+          </div>
+
+          <div className="overdose-cards" aria-label="Good Samaritan laws">
+            <GoodSamaritanCard />
           </div>
 
           <InteractionChecker />
