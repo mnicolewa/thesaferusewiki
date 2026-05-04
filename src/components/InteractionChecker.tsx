@@ -224,8 +224,8 @@ export function InteractionChecker() {
     <section className="panel panel-tool" id="interactions" aria-labelledby="interactions-heading">
       <h2 id="interactions-heading">Drug Interaction Checker</h2>
       <p className="section-intro">
-        Enter up to 8 drugs or medications to check all known interactions at once — sourced from
-        RxNav. Start typing to see name suggestions. This is a safety reference, not a substitute
+        Enter up to 8 drugs or medications to check known interaction statements from FDA labels.
+        Start typing to see RxNorm name suggestions. This is a safety reference, not a substitute
         for clinical advice.
       </p>
 

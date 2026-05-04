@@ -1,10 +1,85 @@
 import { NextRequest, NextResponse } from "next/server";
 import { citationMap } from "@/lib/citations";
 import { getDrugInfo, getDrugInteractions } from "@/services/drugbank";
+import { getDrugInteractionProfile } from "@/services/openfda";
 import { getCompoundSafety, searchCompound } from "@/services/pubchem";
-import { getInteractionsByCui, getRxCui } from "@/services/rxnav";
 
 const MAX_MEDS = 8;
+
+type OpenFdaMatch = {
+  severity: string;
+  description: string;
+};
+
+function escapeRegex(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function classifySeverity(text: string): string {
+  const input = text.toLowerCase();
+  if (/(contraindicat|fatal|life[-\s]?threat|serious|avoid concomitant|do not use)/.test(input)) {
+    return "major";
+  }
+  if (/(monitor|dose adjustment|adjust dose|increase|decrease|caution|closely observe)/.test(input)) {
+    return "moderate";
+  }
+  return "minor";
+}
+
+function summarizeInteraction(text: string, counterpart: string) {
+  const normalized = text.replace(/\s+/g, " ").trim();
+  const rx = new RegExp(`[^.]*\\b${escapeRegex(counterpart)}\\b[^.]*\\.?`, "i");
+  const sentence = normalized.match(rx)?.[0]?.trim();
+  if (sentence) return sentence.slice(0, 280);
+  return normalized.slice(0, 280);
+}
+
+function buildOpenFdaMatches(
+  meds: string[],
+  profiles: Array<{ queriedName: string; knownNames: string[]; interactionText: string[] } | null>
+): OpenFdaMatch[] {
+  const matches: OpenFdaMatch[] = [];
+  const seen = new Set<string>();
+
+  for (let i = 0; i < meds.length; i += 1) {
+    const profile = profiles[i];
+    if (!profile) continue;
+
+    const textPool = profile.interactionText.join(" ");
+    if (!textPool) continue;
+
+    for (let j = 0; j < meds.length; j += 1) {
+      if (i === j) continue;
+      const counterpart = meds[j].trim();
+      if (!counterpart) continue;
+
+      const aliases = [counterpart.toLowerCase(), counterpart];
+      const counterpartProfile = profiles[j];
+      if (counterpartProfile) {
+        aliases.push(...counterpartProfile.knownNames);
+      }
+
+      const aliasMatch = aliases.find((alias) =>
+        new RegExp(`\\b${escapeRegex(alias)}\\b`, "i").test(textPool)
+      );
+      if (!aliasMatch) continue;
+
+      const summary = summarizeInteraction(textPool, aliasMatch);
+      const severity = classifySeverity(summary);
+      const key = `${profile.queriedName.toLowerCase()}|${counterpart.toLowerCase()}|${summary.toLowerCase()}`;
+
+      if (!seen.has(key)) {
+        seen.add(key);
+        matches.push({
+          severity,
+          description: `${profile.queriedName} + ${counterpart}: ${summary}`,
+        });
+      }
+    }
+  }
+
+  return matches;
+}
 
 async function buildPubChemFallback(names: string[]) {
   const fallbackSubstances = await Promise.all(
@@ -74,77 +149,50 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  let rxCuis: Array<string | null>;
-  try {
-    rxCuis = await Promise.all(meds.map((name) => getRxCui(name)));
-  } catch {
-    const fallbackSubstances = await buildPubChemFallback(meds);
-    return NextResponse.json({
-      queried: meds,
-      matches: [],
-      fallbackSubstances,
-      source: {
-        name: "PubChem fallback",
-        citation: citationMap.pubchem,
-      },
-      warning:
-        "Medication interaction feed is temporarily unavailable. Showing PubChem substance safety details where available.",
-    });
-  }
+  const profiles = await Promise.all(meds.map((name) => getDrugInteractionProfile(name)));
+  const matches = buildOpenFdaMatches(meds, profiles);
+  const unrecognized = meds.filter((_, index) => !profiles[index]);
 
-  const failed = meds.filter((_, i) => !rxCuis[i]);
-
-  if (failed.length > 0) {
-    try {
-      const fallbackSubstances = await buildPubChemFallback(failed);
-
-      return NextResponse.json(
-        {
-          queried: meds,
-          matches: [],
-          fallbackSubstances: fallbackSubstances.filter(Boolean),
-          source: {
-            name: "PubChem fallback",
-            citation: citationMap.pubchem,
-          },
-          warning:
-            "Some substances were not recognized in medication databases. Showing PubChem safety information where available.",
-        },
-        { status: 200 }
-      );
-    } catch {
-      return NextResponse.json(
-        {
-          error: `Not recognized by our medication databases: ${failed.join(", ")}. Try full generic names and avoid abbreviations.`,
-        },
-        { status: 404 }
-      );
-    }
-  }
-
-  try {
-    const matches = await getInteractionsByCui(rxCuis as string[]);
-
+  if (matches.length > 0) {
     return NextResponse.json({
       queried: meds,
       matches,
       source: {
-        name: "RxNav Interaction API",
-        citation: citationMap.rxnav,
+        name: "openFDA Drug Labels",
+        citation: citationMap.openfda,
       },
+      warning:
+        unrecognized.length > 0
+          ? `Some names were not found in FDA labels: ${unrecognized.join(", ")}.`
+          : undefined,
     });
-  } catch {
-    const fallbackSubstances = await buildPubChemFallback(meds);
+  }
+
+  if (profiles.some(Boolean)) {
     return NextResponse.json({
       queried: meds,
       matches: [],
-      fallbackSubstances,
       source: {
-        name: "PubChem fallback",
-        citation: citationMap.pubchem,
+        name: "openFDA Drug Labels",
+        citation: citationMap.openfda,
       },
       warning:
-        "Medication interaction feed is temporarily unavailable. Showing PubChem substance safety details where available.",
+        unrecognized.length > 0
+          ? `No explicit interaction statements were found for this combination. Also not found in FDA labels: ${unrecognized.join(", ")}.`
+          : "No explicit interaction statements were found for this combination in current FDA label sections.",
     });
   }
+
+  const fallbackSubstances = await buildPubChemFallback(meds);
+  return NextResponse.json({
+    queried: meds,
+    matches: [],
+    fallbackSubstances,
+    source: {
+      name: "PubChem fallback",
+      citation: citationMap.pubchem,
+    },
+    warning:
+      "Medication interaction labels were not available for this input. Showing PubChem substance safety details where available.",
+  });
 }
