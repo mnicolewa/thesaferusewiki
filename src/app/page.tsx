@@ -17,6 +17,15 @@ export default function Home() {
       <ScrollToTopOnLoad />
       <a href="#main-content" className="skip-link">Skip to main content</a>
 
+      {/* ── Legal disclaimer ── */}
+      <div className="legal-disclaimer" role="note" aria-label="Legal disclaimer">
+        <strong>Educational purposes only.</strong>{" "}
+        The information on this site is not medical advice and does not replace
+        professional medical care. Always consult a qualified healthcare provider
+        for diagnosis and treatment. In an emergency, call{" "}
+        <a href="tel:911">911</a> immediately.
+      </div>
+
       {/* ── Emergency strip ── */}
       <div className="emergency-strip" role="note" aria-label="Emergency resources">
         <strong>Emergency?</strong>

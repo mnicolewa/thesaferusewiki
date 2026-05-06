@@ -300,6 +300,27 @@ main:focus-visible {
 }
 
 /* ─── Emergency Strip ──────────────────────────────────────────── */
+/* ─── Legal disclaimer banner ─────────────────────────────────── */
+.legal-disclaimer {
+  background: #1a1400;
+  border-bottom: 2px solid rgba(234, 179, 8, 0.35);
+  color: #fde68a;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-align: center;
+  padding: 0.6rem 1.5rem;
+  line-height: 1.5;
+}
+.legal-disclaimer strong {
+  color: #fef08a;
+  font-weight: 700;
+}
+.legal-disclaimer a {
+  color: #fde68a;
+  font-weight: 700;
+  text-underline-offset: 2px;
+}
+
 .emergency-strip {
   background: #140505;
   border-bottom: 1px solid rgba(239, 68, 68, 0.25);
